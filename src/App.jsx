@@ -1,37 +1,32 @@
-// App.js
 import { useState, useEffect } from "react";
 import PokemonDeck from "./components/PokemonCard";
-import { ShuffleButton } from "./components/shuffleButton";
 import "./App.css";
+import { FetchButton } from "./components/fetchButton";
 
 function App() {
   const [pokemonDeck, setPokemonDeck] = useState([]);
+  const [correctClicks, setCorrectClicks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchRandomPokemons();
+    // Initial fetch when the component mounts
+    console.log("Fetching new pokes");
+    handleNewFetch();
   }, []);
 
-  const fetchRandomPokemons = async () => {
-    const pokemonIds = generateUniqueRandomNumbers(8, 1, 1010); // 8 unique IDs between 1 and 1010
+  const fetchRandomPokemons = async (pokemonIds) => {
     const promises = pokemonIds.map((id) =>
       fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then((response) =>
         response.json()
       )
     );
-
-    try {
-      const results = await Promise.all(promises);
-      setPokemonDeck(results);
-    } catch (error) {
-      setError("Failed to fetch Pokémon data");
-    } finally {
-      setLoading(false);
-    }
+    return Promise.all(promises);
   };
 
   const shuffleDeck = (deck) => {
+    const cardsContainer = document.querySelector(".grid");
+    // cardsContainer.classList.toggle("helloshuffle");
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap elements
@@ -40,7 +35,35 @@ function App() {
   };
 
   const handleShuffle = () => {
+    const cardsContainer = document.querySelector(".grid");
+    cardsContainer.classList.toggle("helloshuffle");
     setPokemonDeck(shuffleDeck([...pokemonDeck])); // Shuffle the current deck
+  };
+
+  const handleNewFetch = async () => {
+    setLoading(true);
+    setError(null);
+    setCorrectClicks([]);
+
+    try {
+      const pokemonIds = generateUniqueRandomNumbers(8, 1, 1010); // Generate 8 random unique IDs
+      const results = await fetchRandomPokemons(pokemonIds);
+      setPokemonDeck(results);
+    } catch (error) {
+      setError("Failed to fetch Pokémon data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClick = (key) => {
+    if (correctClicks.includes(key)) {
+      setCorrectClicks([]);
+      console.log(`${key} is in the array.`);
+    } else {
+      setCorrectClicks((prevClicks) => [...prevClicks, key]);
+    }
+    handleShuffle();
   };
 
   if (loading) return <div>Loading...</div>;
@@ -49,8 +72,9 @@ function App() {
   return (
     <div className="App">
       <h1>Pokemon Deck</h1>
-      <ShuffleButton onShuffle={handleShuffle} />
-      <PokemonDeck pokemonDeck={pokemonDeck} />
+      <div>User score: {correctClicks.length}</div>
+      <FetchButton onFetch={handleNewFetch} />
+      <PokemonDeck pokemonDeck={pokemonDeck} onClick={handleClick} />
     </div>
   );
 }

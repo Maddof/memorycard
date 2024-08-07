@@ -10,10 +10,15 @@
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  border: 1px solid ccc;
+  border: 6px solid #fffb00;
   border-radius: 8px;
   background-color: #f9f9f9;
   color: rgb(43, 43, 43);
+}
+
+.card:hover {
+  cursor: pointer;
+  border: 6px solid red;
 }
 
 .grid {
@@ -24,6 +29,36 @@
 }
 
 .grid img {
-  width: 100px;
-  height: 100px;
+  width: 180px;
+  height: 180px;
+}
+
+.pokemon-name {
+  font-size: 1.5rem;
+}
+
+.helloshuffle {
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation: fade-cards 500ms;
+}
+
+@keyframes fade-cards {
+  0% {
+    opacity: 0;
+    transform: opacity(0);
+  }
+  100% {
+    opacity: 1;
+    transform: opacity(1);
+  }
+}
+
+@keyframes scale-cards {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

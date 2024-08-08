@@ -1,8 +1,7 @@
-import { motion, AnimatePresence } from "framer-motion";
-
-const PokemonDeck = ({ pokemonDeck, onClick }) => {
+const PokemonCards = ({ pokemonDeck, onClick }) => {
   return (
-    <div className="grid">
+    // <div className="grid">
+    <>
       {pokemonDeck.map((pokemon) => (
         <div
           key={pokemon.id}
@@ -18,8 +17,9 @@ const PokemonDeck = ({ pokemonDeck, onClick }) => {
           </p>
         </div>
       ))}
-    </div>
+    </>
+    // </div>
   );
 };
 
-export default PokemonDeck;
+export default PokemonCards;

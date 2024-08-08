@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import PokemonDeck from "./components/PokemonCard";
+import PokemonCards from "./components/PokemonCard";
 import "./App.css";
 import { FetchButton } from "./components/fetchButton";
+import { LoseUi } from "./components/loseUi";
+import { WinUi } from "./components/winUi";
 
 function App() {
   const [pokemonDeck, setPokemonDeck] = useState([]);
@@ -9,11 +11,21 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [isShuffling, setIsShuffling] = useState(false); // State for managing shuffle animation
+  const [lose, setLost] = useState(false);
+  const [win, setWin] = useState(false); // State for managing win condition
+
   useEffect(() => {
     // Initial fetch when the component mounts
     console.log("Fetching new pokes");
     handleNewFetch();
   }, []);
+
+  useEffect(() => {
+    if (correctClicks.length === 8) {
+      handleWin();
+    }
+  }, [correctClicks]); // Run only when correctClicks changes
 
   const fetchRandomPokemons = async (pokemonIds) => {
     const promises = pokemonIds.map((id) =>
@@ -25,8 +37,6 @@ function App() {
   };
 
   const shuffleDeck = (deck) => {
-    const cardsContainer = document.querySelector(".grid");
-    // cardsContainer.classList.toggle("helloshuffle");
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap elements
@@ -35,14 +45,16 @@ function App() {
   };
 
   const handleShuffle = () => {
-    const cardsContainer = document.querySelector(".grid");
-    cardsContainer.classList.toggle("helloshuffle");
+    setIsShuffling(true);
     setPokemonDeck(shuffleDeck([...pokemonDeck])); // Shuffle the current deck
+    setTimeout(() => setIsShuffling(false), 1250); // Set animation state to false after 1250 ms (animation duration)
   };
 
   const handleNewFetch = async () => {
     setLoading(true);
     setError(null);
+    setWin(false);
+    setLost(false);
     setCorrectClicks([]);
 
     try {
@@ -56,14 +68,25 @@ function App() {
     }
   };
 
-  const handleClick = (key) => {
-    if (correctClicks.includes(key)) {
-      setCorrectClicks([]);
-      console.log(`${key} is in the array.`);
+  const handleClick = (pokeId) => {
+    if (correctClicks.includes(pokeId)) {
+      handleLose();
+      console.log(`${pokeId} is in the array.`);
     } else {
-      setCorrectClicks((prevClicks) => [...prevClicks, key]);
+      setCorrectClicks((prevClicks) => [...prevClicks, pokeId]);
     }
     handleShuffle();
+  };
+  const handleLose = () => {
+    console.log("YOU LOST");
+    setLost(true);
+    setCorrectClicks([]);
+  };
+
+  const handleWin = () => {
+    console.log("YOU WON!");
+    setWin(true);
+    setCorrectClicks([]);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -74,7 +97,15 @@ function App() {
       <h1>Pokemon Deck</h1>
       <div>User score: {correctClicks.length}</div>
       <FetchButton onFetch={handleNewFetch} />
-      <PokemonDeck pokemonDeck={pokemonDeck} onClick={handleClick} />
+      {win ? (
+        <WinUi />
+      ) : lose ? (
+        <LoseUi />
+      ) : (
+        <div className={`grid ${isShuffling ? "helloshuffle" : ""}`}>
+          <PokemonCards pokemonDeck={pokemonDeck} onClick={handleClick} />
+        </div>
+      )}
     </div>
   );
 }

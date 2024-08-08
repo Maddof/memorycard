@@ -1,8 +1,18 @@
+:root {
+  --shuffling-duration: 1250ms; /* Default value */
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 800px;
 }
 
 .card {
@@ -38,27 +48,41 @@
 }
 
 .helloshuffle {
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  animation: fade-cards 500ms;
+  animation: fade-cards var(--shuffling-duration);
+}
+
+.lose-wrapper,
+.win-wrapper {
+  font-size: 4rem;
+  animation: scale-in 500ms 400ms ease-in-out;
+  margin-top: 20%;
+  visibility: hidden;
+  animation-fill-mode: forwards;
+  /* animation: name duration timing-function delay iteration-count direction fill-mode; */
 }
 
 @keyframes fade-cards {
   0% {
     opacity: 0;
-    transform: opacity(0);
+    transform: rotateY(0deg);
+    /* transform: scale(0); */
+  }
+  50% {
+    transform: rotateY(180deg);
   }
   100% {
     opacity: 1;
-    transform: opacity(1);
+    transform: rotateY(360deg);
+    /* transform: scale(1); */
   }
 }
 
-@keyframes scale-cards {
+@keyframes scale-in {
   0% {
     transform: scale(0);
   }
   100% {
+    visibility: visible;
     transform: scale(1);
   }
 }

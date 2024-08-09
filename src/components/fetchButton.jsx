@@ -1,5 +1,9 @@
-const FetchButton = ({ onFetch }) => {
-  return <button onClick={onFetch}>Fetch new cards</button>;
+const FetchButton = ({ onFetch, fetchCount }) => {
+  return (
+    <button onClick={() => onFetch(fetchCount)}>
+      Fetch new cards({fetchCount})
+    </button>
+  );
 };
 
 export { FetchButton };

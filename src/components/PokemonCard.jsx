@@ -1,9 +1,8 @@
 const PokemonCards = ({ pokemonDeck, onClick }) => {
   return (
-    // <div className="grid">
     <>
       {pokemonDeck.map((pokemon) => (
-        <div
+        <button
           key={pokemon.id}
           className="card"
           onClick={() => onClick(pokemon.id)}
@@ -15,11 +14,9 @@ const PokemonCards = ({ pokemonDeck, onClick }) => {
           <p className="pokemon-name">
             {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
           </p>
-        </div>
+        </button>
       ))}
     </>
-    // </div>
   );
 };
-
 export default PokemonCards;

@@ -3,7 +3,7 @@
 }
 
 #root {
-  max-width: 1280px;
+  max-width: 1920px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -24,6 +24,16 @@
   border-radius: 8px;
   background-color: #f9f9f9;
   color: rgb(43, 43, 43);
+  /* max-width: 180px; */
+  min-width: 200px;
+  min-height: 268px;
+}
+
+.fetchbuttons-wrapper {
+  display: flex;
+  margin-inline: auto;
+  gap: 0.5em;
+  max-width: 400px;
 }
 
 .card:hover {
@@ -33,14 +43,15 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px;
+  /* grid-template-columns: repeat(4, 1fr); */
+  /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .grid img {
-  width: 180px;
-  height: 180px;
+  width: 160px;
+  height: 160px;
 }
 
 .pokemon-name {

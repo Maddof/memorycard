@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import PokemonCards from "./components/PokemonCard";
-import "./App.css";
 import { FetchButton } from "./components/fetchButton";
 import { LoseUi } from "./components/loseUi";
 import { WinUi } from "./components/winUi";
+import "./App.css";
 
 function App() {
   const [pokemonDeck, setPokemonDeck] = useState([]);
@@ -15,6 +15,8 @@ function App() {
   const [lose, setLost] = useState(false);
   const [win, setWin] = useState(false); // State for managing win condition
 
+  const [fetchCount, setFetchCount] = useState(8);
+
   useEffect(() => {
     // Initial fetch when the component mounts
     console.log("Fetching new pokes");
@@ -22,7 +24,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (correctClicks.length === 8) {
+    if (correctClicks.length === fetchCount) {
       handleWin();
     }
   }, [correctClicks]); // Run only when correctClicks changes
@@ -50,15 +52,22 @@ function App() {
     setTimeout(() => setIsShuffling(false), 1250); // Set animation state to false after 1250 ms (animation duration)
   };
 
-  const handleNewFetch = async () => {
+  const handleNewFetch = async (count = 8) => {
     setLoading(true);
     setError(null);
     setWin(false);
     setLost(false);
     setCorrectClicks([]);
 
+    if (count === 8) {
+      setFetchCount(8);
+    }
+    if (count === 12) {
+      setFetchCount(12);
+    }
+
     try {
-      const pokemonIds = generateUniqueRandomNumbers(8, 1, 1010); // Generate 8 random unique IDs
+      const pokemonIds = generateUniqueRandomNumbers(count, 1, 1010); // Generate 8 random unique IDs
       const results = await fetchRandomPokemons(pokemonIds);
       setPokemonDeck(results);
     } catch (error) {
@@ -94,16 +103,31 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Pokemon Deck</h1>
+      <h1>Pokemon Memory Game</h1>
       <div>User score: {correctClicks.length}</div>
-      <FetchButton onFetch={handleNewFetch} />
+      <div className="fetchbuttons-wrapper">
+        <FetchButton onFetch={handleNewFetch} fetchCount={8} />
+        <FetchButton onFetch={handleNewFetch} fetchCount={12} />
+      </div>
+
       {win ? (
         <WinUi />
       ) : lose ? (
         <LoseUi />
       ) : (
-        <div className={`grid ${isShuffling ? "helloshuffle" : ""}`}>
-          <PokemonCards pokemonDeck={pokemonDeck} onClick={handleClick} />
+        <div
+          className={`grid ${isShuffling ? "helloshuffle" : ""}`}
+          style={{
+            gridTemplateColumns: `repeat(${fetchCount / 2}, 1fr)`,
+            // gridTemplateColumns: `repeat${fetchCount/2, 1fr}`,
+            // gridTemplateColumns: "repeat(4, 1fr)",
+          }}
+        >
+          <PokemonCards
+            pokemonDeck={pokemonDeck}
+            onClick={handleClick}
+            dispayCount={fetchCount}
+          />
         </div>
       )}
     </div>

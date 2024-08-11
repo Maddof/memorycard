@@ -25,7 +25,7 @@
   background-color: #f9f9f9;
   color: rgb(43, 43, 43);
   /* max-width: 180px; */
-  min-width: 200px;
+  min-width: 210px;
   min-height: 268px;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .pokemon-name {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 .helloshuffle {

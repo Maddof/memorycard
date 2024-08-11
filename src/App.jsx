@@ -67,7 +67,7 @@ function App() {
     }
 
     try {
-      const pokemonIds = generateUniqueRandomNumbers(count, 1, 1010); // Generate 8 random unique IDs
+      const pokemonIds = generateUniqueRandomNumbers(count, 1, 1010); // Generate random unique IDs between 1 and 1010
       const results = await fetchRandomPokemons(pokemonIds);
       setPokemonDeck(results);
     } catch (error) {
@@ -119,8 +119,6 @@ function App() {
           className={`grid ${isShuffling ? "helloshuffle" : ""}`}
           style={{
             gridTemplateColumns: `repeat(${fetchCount / 2}, 1fr)`,
-            // gridTemplateColumns: `repeat${fetchCount/2, 1fr}`,
-            // gridTemplateColumns: "repeat(4, 1fr)",
           }}
         >
           <PokemonCards
